@@ -8,7 +8,6 @@ package Algoritmos;
 import Utils.Constantes;
 import java.util.List;
 import Procesos.Proceso;
-import Vistas.Rectangulo;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -36,8 +35,6 @@ public abstract class Algoritmo
 
     protected Proceso procesoEnCurso;
 
-    protected List<Rectangulo> elementosDibujados;
-
     protected int cursorRectanguloGantt;
 
     protected DefaultTableModel modelTblColaProcesos;
@@ -59,7 +56,6 @@ public abstract class Algoritmo
     public Algoritmo(List<Proceso> procesos, javax.swing.JTable tblColaProcesos, 
             Graphics2D graficaPanel, Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
     {
-        this.elementosDibujados = new ArrayList<>();
         this.colaProcesosListos = new ArrayList<>();
         this.colaProcesosSinLlegar = new ArrayList<>();
         this.colaProcesosBloqueados = new ArrayList<>();
