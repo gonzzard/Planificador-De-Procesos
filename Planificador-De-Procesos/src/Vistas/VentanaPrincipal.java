@@ -62,6 +62,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.btnListo.setEnabled(false);
         this.btnPasoSiguiente.setEnabled(false);
         this.btnSimular.setEnabled(false);
+        this.btnGraficas.setEnabled(false);
+        this.btnAniadirProceso.setEnabled(false);
+        this.btnGuardar.setEnabled(false);
+        
         
         int ancho = panelGantt.getWidth();
         int alto = panelGantt.getHeight();
@@ -94,8 +98,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
         chxFIFS = new javax.swing.JCheckBox();
         chxSJF = new javax.swing.JCheckBox();
         chxRR = new javax.swing.JCheckBox();
-        btnPasoSiguiente = new javax.swing.JButton();
         btnListo = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnGraficas = new javax.swing.JButton();
+        btnEncender = new javax.swing.JButton();
+        btnPasoSiguiente = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProcesos = new javax.swing.JTable();
         spColaProcesosListos = new javax.swing.JScrollPane();
@@ -112,7 +119,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         tblColaBloqueados = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Simulador planificador de procesos");
+        setTitle("Simulador planificador de procesos. Gonzalo de las Heras - Daniel Fernández");
         setMinimumSize(new java.awt.Dimension(1060, 620));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -152,9 +159,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         pnlControl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
-        btnSimular.setText(">>");
-        btnSimular.setMaximumSize(new java.awt.Dimension(138, 29));
-        btnSimular.setMinimumSize(new java.awt.Dimension(138, 29));
+        btnSimular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/simular.png"))); // NOI18N
+        btnSimular.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnSimular.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnSimular.setPreferredSize(new java.awt.Dimension(48, 48));
         btnSimular.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mousePressed(java.awt.event.MouseEvent evt)
@@ -164,7 +172,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
 
         btnAniadirProceso.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
-        btnAniadirProceso.setText("+");
+        btnAniadirProceso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/anadir.png"))); // NOI18N
+        btnAniadirProceso.setActionCommand("");
+        btnAniadirProceso.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnAniadirProceso.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnAniadirProceso.setPreferredSize(new java.awt.Dimension(48, 48));
         btnAniadirProceso.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mousePressed(java.awt.event.MouseEvent evt)
@@ -200,21 +212,70 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         });
 
-        btnPasoSiguiente.setText(">");
-        btnPasoSiguiente.addMouseListener(new java.awt.event.MouseAdapter()
-        {
-            public void mousePressed(java.awt.event.MouseEvent evt)
-            {
-                btnPasoSiguienteMousePressed(evt);
-            }
-        });
-
-        btnListo.setText("Listo");
+        btnListo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/tick.png"))); // NOI18N
+        btnListo.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnListo.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnListo.setPreferredSize(new java.awt.Dimension(48, 48));
         btnListo.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
                 btnListoActionPerformed(evt);
+            }
+        });
+
+        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/guardar.png"))); // NOI18N
+        btnGuardar.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnGuardar.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnGuardar.setPreferredSize(new java.awt.Dimension(48, 48));
+        btnGuardar.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mousePressed(java.awt.event.MouseEvent evt)
+            {
+                btnGuardarMousePressed(evt);
+            }
+        });
+        btnGuardar.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                btnGuardarActionPerformed(evt);
+            }
+        });
+
+        btnGraficas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/graficas.png"))); // NOI18N
+        btnGraficas.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnGraficas.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnGraficas.setPreferredSize(new java.awt.Dimension(48, 48));
+        btnGraficas.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mousePressed(java.awt.event.MouseEvent evt)
+            {
+                btnGraficasMousePressed(evt);
+            }
+        });
+
+        btnEncender.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/encender.png"))); // NOI18N
+        btnEncender.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnEncender.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnEncender.setPreferredSize(new java.awt.Dimension(48, 48));
+        btnEncender.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mousePressed(java.awt.event.MouseEvent evt)
+            {
+                btnEncenderMousePressed(evt);
+            }
+        });
+
+        btnPasoSiguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/pasoSiguiente.png"))); // NOI18N
+        btnPasoSiguiente.setMaximumSize(new java.awt.Dimension(48, 48));
+        btnPasoSiguiente.setMinimumSize(new java.awt.Dimension(48, 48));
+        btnPasoSiguiente.setPreferredSize(new java.awt.Dimension(48, 48));
+        btnPasoSiguiente.addMouseListener(new java.awt.event.MouseAdapter()
+        {
+            public void mousePressed(java.awt.event.MouseEvent evt)
+            {
+                btnPasoSiguienteMousePressed(evt);
             }
         });
 
@@ -227,40 +288,51 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlControlLayout.createSequentialGroup()
                         .addComponent(chxFIFS)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(chxSJF)
-                        .addGap(19, 19, 19)
+                        .addGap(18, 18, 18)
                         .addComponent(chxRR))
                     .addGroup(pnlControlLayout.createSequentialGroup()
-                        .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnListo))
-                    .addGroup(pnlControlLayout.createSequentialGroup()
-                        .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(282, Short.MAX_VALUE))
+                        .addComponent(btnEncender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnListo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGraficas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlControlLayout.setVerticalGroup(
             pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlControlLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlControlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAniadirProceso)
-                    .addComponent(btnListo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnGraficas, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnEncender, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnListo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnSimular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chxFIFS)
                     .addComponent(chxSJF)
                     .addComponent(chxRR))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPasoSiguiente)
-                    .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(49, 49, 49))
+                .addContainerGap())
         );
 
-        getContentPane().add(pnlControl, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, 470, 106));
+        getContentPane().add(pnlControl, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 40, 460, 106));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(454, 404));
 
@@ -420,6 +492,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 return canEdit [columnIndex];
             }
         });
+        tblNoLlegados.setShowGrid(true);
         jScrollPane3.setViewportView(tblNoLlegados);
         if (tblNoLlegados.getColumnModel().getColumnCount() > 0)
         {
@@ -490,6 +563,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 return canEdit [columnIndex];
             }
         });
+        tblColaBloqueados.setShowGrid(true);
         jScrollPane4.setViewportView(tblColaBloqueados);
         if (tblColaBloqueados.getColumnModel().getColumnCount() > 0)
         {
@@ -513,31 +587,41 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     private void btnAniadirProcesoMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnAniadirProcesoMousePressed
     {//GEN-HEADEREND:event_btnAniadirProcesoMousePressed
-        this.prepararDiagramaGantt();        
-        if (idProceso != 6)
+        if (idProceso <= 5)
         {
-            modelTblProcesos.addRow(new Object[]
-        {
+            this.modelTblProcesos.addRow(new Object[]
+            {
             idProceso, 0, 3, 3, 5, 1
-        });
-        idProceso++;
-        btnListo.setEnabled(true);
+            });
+            idProceso++;
+            this.btnListo.setEnabled(true);
+            if (idProceso == 6)
+            {
+                this.btnAniadirProceso.setEnabled(false);
+                this.btnAniadirProceso.setFocusPainted(false);
+            }
         }
     }//GEN-LAST:event_btnAniadirProcesoMousePressed
 
     private void btnSimularMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnSimularMousePressed
     {//GEN-HEADEREND:event_btnSimularMousePressed
         algoritmo.run(1);
-        btnPasoSiguiente.setEnabled(false);
-        btnSimular.setEnabled(false);
+        this.btnPasoSiguiente.setFocusPainted(false);
+        this.btnPasoSiguiente.setEnabled(false);
+        this.btnSimular.setFocusPainted(false);
+        this.btnSimular.setEnabled(false);
+        this.btnGuardar.setEnabled(true);
+        this.btnGraficas.setEnabled(true);
     }//GEN-LAST:event_btnSimularMousePressed
 
     private void btnPasoSiguienteMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnPasoSiguienteMousePressed
     {//GEN-HEADEREND:event_btnPasoSiguienteMousePressed
         if (algoritmo.PasoSiguiente())
         {
-            btnPasoSiguiente.setEnabled(false);
-            btnSimular.setEnabled(false);
+            this.btnPasoSiguiente.setFocusPainted(false);
+            this.btnPasoSiguiente.setEnabled(false);
+            this.btnSimular.setFocusPainted(false);
+            this.btnSimular.setEnabled(false);
         }
     }//GEN-LAST:event_btnPasoSiguienteMousePressed
 
@@ -577,13 +661,36 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     private void panelGanttComponentAdded(java.awt.event.ContainerEvent evt)//GEN-FIRST:event_panelGanttComponentAdded
     {//GEN-HEADEREND:event_panelGanttComponentAdded
-        this.prepararDiagramaGantt();
+
     }//GEN-LAST:event_panelGanttComponentAdded
 
     private void panelGanttComponentShown(java.awt.event.ComponentEvent evt)//GEN-FIRST:event_panelGanttComponentShown
     {//GEN-HEADEREND:event_panelGanttComponentShown
-        this.prepararDiagramaGantt();
+
     }//GEN-LAST:event_panelGanttComponentShown
+
+    private void btnGuardarMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnGuardarMousePressed
+    {//GEN-HEADEREND:event_btnGuardarMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnGuardarMousePressed
+
+    private void btnGraficasMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnGraficasMousePressed
+    {//GEN-HEADEREND:event_btnGraficasMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnGraficasMousePressed
+
+    private void btnEncenderMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnEncenderMousePressed
+    {//GEN-HEADEREND:event_btnEncenderMousePressed
+        this.btnEncender.setEnabled(false);
+        this.btnEncender.setFocusPainted(false);
+        this.btnAniadirProceso.setEnabled(true);
+        this.prepararDiagramaGantt();
+    }//GEN-LAST:event_btnEncenderMousePressed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnGuardarActionPerformed
+    {//GEN-HEADEREND:event_btnGuardarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -706,6 +813,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAniadirProceso;
+    private javax.swing.JButton btnEncender;
+    private javax.swing.JButton btnGraficas;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnListo;
     private javax.swing.JButton btnPasoSiguiente;
     private javax.swing.JButton btnSimular;
