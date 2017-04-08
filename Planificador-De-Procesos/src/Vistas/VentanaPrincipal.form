@@ -4,13 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Simulador planificador de procesos"/>
-    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[99999, 99999]"/>
-    </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[1060, 620]"/>
-    </Property>
-    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[1060, 620]"/>
     </Property>
     <Property name="resizable" type="boolean" value="false"/>
@@ -77,7 +71,7 @@
         </DimensionLayout>
       </Layout>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="pnlControl">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
@@ -99,21 +93,25 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Component id="chxFIFS" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="chxSJF" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
+                          <Component id="chxRR" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="btnSimular" min="-2" pref="123" max="-2" attributes="0"/>
-                      <Component id="btnAniadirProceso" alignment="0" min="-2" pref="126" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="btnAniadirProceso" min="-2" pref="45" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnListo" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="btnSimular" min="-2" pref="47" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="btnPasoSiguiente" min="-2" pref="45" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="btnListo" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnPasoSiguiente" min="-2" pref="150" max="-2" attributes="0"/>
-                      <Component id="chxRR" alignment="0" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace pref="180" max="32767" attributes="0"/>
+                  <EmptySpace pref="282" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -144,7 +142,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="btnSimular">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Simular"/>
+            <Property name="text" type="java.lang.String" value="&gt;&gt;"/>
             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[138, 29]"/>
             </Property>
@@ -158,7 +156,10 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnAniadirProceso">
           <Properties>
-            <Property name="text" type="java.lang.String" value="A&#xf1;adir Proceso"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Lucida Grande" size="18" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="+"/>
           </Properties>
           <Events>
             <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnAniadirProcesoMousePressed"/>
@@ -190,7 +191,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnPasoSiguiente">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Paso Siguiente"/>
+            <Property name="text" type="java.lang.String" value="&gt;"/>
           </Properties>
           <Events>
             <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnPasoSiguienteMousePressed"/>
@@ -223,7 +224,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="tablaProcesos">
+        <Component class="javax.swing.JTable" name="tblProcesos">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="7" rowCount="0">
@@ -236,9 +237,11 @@
                 <Column editable="false" title="Progreso" type="java.lang.String"/>
               </Table>
             </Property>
-            <Property name="toolTipText" type="java.lang.String" value=""/>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="null" type="code"/>
+            </Property>
             <Property name="autoResizeMode" type="int" value="0"/>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="DefaultTableCellRenderer centerRendererTblProcesos = new DefaultTableCellRenderer();&#xa;centerRendererTblProcesos.setHorizontalAlignment( JLabel.CENTER );&#xa;tblProcesos.getColumnModel().getColumn(0).setCellRenderer(centerRendererTblProcesos);&#xa;tblProcesos.getColumnModel().getColumn(1).setCellRenderer(centerRendererTblProcesos);&#xa;tblProcesos.getColumnModel().getColumn(2).setCellRenderer(centerRendererTblProcesos);&#xa;tblProcesos.getColumnModel().getColumn(3).setCellRenderer(centerRendererTblProcesos);&#xa;tblProcesos.getColumnModel().getColumn(4).setCellRenderer(centerRendererTblProcesos );&#xa;tblProcesos.getColumnModel().getColumn(5).setCellRenderer(centerRendererTblProcesos);&#xa;tblProcesos.getColumnModel().getColumn(6).setCellRenderer(centerRendererTblProcesos);&#xa;&#xa;((DefaultTableCellRenderer)tblProcesos.getTableHeader().getDefaultRenderer())&#xa;    .setHorizontalAlignment(JLabel.CENTER);">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                   <Title/>
@@ -307,7 +310,7 @@
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="6" rowCount="0">
-                <Column editable="false" title="Posici&#xf3;n" type="java.lang.Integer"/>
+                <Column editable="false" title="Posici&#xf3;n" type="java.lang.String"/>
                 <Column editable="false" title="Id" type="java.lang.Integer"/>
                 <Column editable="false" title="CPU1" type="java.lang.Integer"/>
                 <Column editable="false" title="E/S" type="java.lang.Integer"/>
@@ -321,7 +324,7 @@
             <Property name="autoResizeMode" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="javax.swing.JTable.AUTO_RESIZE_OFF" type="code"/>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="Dimension d = tblColaProcesosListos.getPreferredSize();&#xa;spColaProcesosListos.setPreferredSize(&#xa;    new Dimension(d.width,tblColaProcesosListos.getRowHeight()*5+1));">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" preCode="Dimension d = tblColaProcesosListos.getPreferredSize();&#xa;spColaProcesosListos.setPreferredSize(&#xa;    new Dimension(d.width,tblColaProcesosListos.getRowHeight()*5+1));" postCode="((DefaultTableCellRenderer)tblColaProcesosListos.getTableHeader().getDefaultRenderer())&#xa;    .setHorizontalAlignment(JLabel.CENTER);&#xa;&#xa;DefaultTableCellRenderer centerRenderertblColaProcesosListos= new DefaultTableCellRenderer();&#xa;centerRenderertblColaProcesosListos.setHorizontalAlignment( JLabel.CENTER );&#xa;tblColaProcesosListos.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblColaProcesosListos);&#xa;tblColaProcesosListos.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblColaProcesosListos);&#xa;tblColaProcesosListos.getColumnModel().getColumn(2).setCellRenderer(centerRenderertblColaProcesosListos);&#xa;tblColaProcesosListos.getColumnModel().getColumn(3).setCellRenderer(centerRenderertblColaProcesosListos);&#xa;tblColaProcesosListos.getColumnModel().getColumn(4).setCellRenderer(centerRenderertblColaProcesosListos);&#xa;tblColaProcesosListos.getColumnModel().getColumn(5).setCellRenderer(centerRenderertblColaProcesosListos);">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                   <Title/>
@@ -371,64 +374,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-      <Properties>
-        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[454, 107]"/>
-        </Property>
-      </Properties>
-      <AuxValues>
-        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-      </AuxValues>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="520" y="190" width="290" height="107"/>
-        </Constraint>
-      </Constraints>
-
-      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-      <SubComponents>
-        <Component class="javax.swing.JTable" name="jTable1">
-          <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="3" rowCount="4">
-                <Column editable="false" title="Id" type="java.lang.Integer"/>
-                <Column editable="false" title="E/S" type="java.lang.Integer"/>
-                <Column editable="false" title="E/S Restante" type="java.lang.Integer"/>
-              </Table>
-            </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="Dimension d1 = jTable1.getPreferredSize();&#xa;jScrollPane2.setPreferredSize(&#xa;    new Dimension(d1.width,jTable1.getRowHeight()*5+1));">
-              <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-              </TableColumnModel>
-            </Property>
-            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[90, 0]"/>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[450, 0]"/>
-            </Property>
-            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
-              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
-            </Property>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
     <Container class="javax.swing.JScrollPane" name="jScrollPane3">
       <AuxValues>
         <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
@@ -441,7 +386,7 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JTable" name="jTable2">
+        <Component class="javax.swing.JTable" name="tblNoLlegados">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
               <Table columnCount="2" rowCount="0">
@@ -449,7 +394,7 @@
                 <Column editable="false" title="Llegada" type="java.lang.Integer"/>
               </Table>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="((DefaultTableCellRenderer)tblNoLlegados.getTableHeader().getDefaultRenderer())&#xa;    .setHorizontalAlignment(JLabel.CENTER);&#xa;&#xa;DefaultTableCellRenderer centerRenderertblNoLlegados= new DefaultTableCellRenderer();&#xa;centerRenderertblNoLlegados.setHorizontalAlignment( JLabel.CENTER );&#xa;tblNoLlegados.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblNoLlegados);&#xa;tblNoLlegados.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblNoLlegados);">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                   <Title/>
@@ -470,7 +415,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="lblColaProcesos">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -483,7 +428,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel2">
+    <Component class="javax.swing.JLabel" name="lblNoLlegados">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -496,7 +441,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel3">
+    <Component class="javax.swing.JLabel" name="lblColaListos">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -509,7 +454,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel4">
+    <Component class="javax.swing.JLabel" name="lblCronograma">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -522,7 +467,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel5">
+    <Component class="javax.swing.JLabel" name="lblPanelControl">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -535,7 +480,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel6">
+    <Component class="javax.swing.JLabel" name="lblColaBloqueados">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Console" size="18" style="0"/>
@@ -548,5 +493,52 @@
         </Constraint>
       </Constraints>
     </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
+          <AbsoluteConstraints x="540" y="190" width="260" height="107"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JTable" name="tblColaBloqueados">
+          <Properties>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+              <Table columnCount="3" rowCount="0">
+                <Column editable="false" title="Id" type="java.lang.Integer"/>
+                <Column editable="false" title="E/S" type="java.lang.Integer"/>
+                <Column editable="false" title="E/S Restante" type="java.lang.Integer"/>
+              </Table>
+            </Property>
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="((DefaultTableCellRenderer)tblColaBloqueados.getTableHeader().getDefaultRenderer())&#xa;    .setHorizontalAlignment(JLabel.CENTER);&#xa;&#xa;DefaultTableCellRenderer centerRenderertblColaBloqueados= new DefaultTableCellRenderer();&#xa;centerRenderertblColaBloqueados.setHorizontalAlignment( JLabel.CENTER );&#xa;tblColaBloqueados.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblColaBloqueados);&#xa;tblColaBloqueados.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblColaBloqueados);&#xa;tblColaBloqueados.getColumnModel().getColumn(2).setCellRenderer(centerRenderertblColaBloqueados);">
+              <TableColumnModel selectionModel="0">
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
+                  <Title/>
+                  <Editor/>
+                  <Renderer/>
+                </Column>
+              </TableColumnModel>
+            </Property>
+            <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
+              <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
+            </Property>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>

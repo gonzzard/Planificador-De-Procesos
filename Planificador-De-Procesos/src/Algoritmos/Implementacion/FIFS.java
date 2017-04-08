@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.JTable;
 
 /**
  *
@@ -22,10 +23,13 @@ public class FIFS extends Algoritmo
     public int tiempoDeEspera;
     public int tiempoDeEjecucion;
 
-    public FIFS(List<Proceso> procesos, javax.swing.JTable tblColaProcesos,
-            Graphics2D graficaPanel, Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
+    public FIFS(List<Proceso> procesos, JTable tblColaProcesos,
+            JTable tblColaProcesosListos, JTable tblColaProcesosBloqueados,
+            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel, 
+            Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
     {
-        super(procesos, tblColaProcesos, graficaPanel, graficaBuffer, bufferPanelGantt);
+        super(procesos, tblColaProcesos, tblColaProcesosListos, tblColaProcesosBloqueados,
+                tblColaProcesosSinLlegar, graficaPanel, graficaBuffer, bufferPanelGantt);
     }
 
     @Override
@@ -43,11 +47,25 @@ public class FIFS extends Algoritmo
     {
         if (!fin)
         {
-            tratarColaProcesosSinLlegar();
-
-            tratarColaProcesosBloqueados();
+            System.out.println("*********************** T = " + tiempoProcesador);
             
-            tratarColaProcesosListos();
+            procesoSaliente = null;
+            
+            tratarColaProcesosSinLlegar();
+            
+            repintarColaProcesosSinLlegar();
+
+            tratarColaProcesosBloqueados();     
+            
+            repintarColaProcesosBloqueados();
+            
+            tratarColaProcesosListos();  
+            
+            repintarColaProcesosListos();
+            
+            repintarColaProcesosBloqueados();
+            
+            repintarColaProcesos();
 
             if (colaProcesosSinLlegar.isEmpty() && colaProcesosListos.isEmpty()
                     && colaProcesosBloqueados.isEmpty() && procesoEnCurso == null)
@@ -63,7 +81,7 @@ public class FIFS extends Algoritmo
         }
         else
         {
-                System.out.println("*** FIN DE LA SIMULACIÓN");
+            System.out.println("*** FIN DE LA SIMULACIÓN");
             System.out.println("********************************************");
             System.out.println("********************************************\n");
         }
@@ -137,19 +155,17 @@ public class FIFS extends Algoritmo
                     // No tiene ejecución en  CPU2, terminó su ejecución general
                     procesoBloqueado.estado = Constantes.PROCESO_COMPLETADO;
                     procesoBloqueado.ultimaModificacion = tiempoDeEjecucion;
-                    colaProcesosBloqueados.remove(i);
-                    i--;
                     System.out.println("El proceso #" + procesoBloqueado.id + " sale a bloqueado y termina su ejecución");
                 } else
                 {
                     // Tiene pendiente su ejecución en CPU2, entra en CPU2
                     procesoBloqueado.estado = Constantes.PROCESO_EN_CPU2;
                     procesoBloqueado.ultimaModificacion = tiempoDeEjecucion;
-                    colaProcesosBloqueados.remove(i);
                     colaProcesosListos.add(procesoBloqueado);
-                    i--;
                     System.out.println("El proceso #" + procesoBloqueado.id + " sale a CPU2");
                 }
+                colaProcesosBloqueados.remove(i);
+                i--;
             }
         }
 
@@ -161,32 +177,35 @@ public class FIFS extends Algoritmo
         System.out.println("*** INICIO TRATAMIENTO NUEVO PROCESO DE COLA DE LISTOS");
 
         // Saco un proceso y le hago ejecutarse
-        if (procesoEnCurso == null && colaProcesosListos.size() > 0 && colaProcesosListos.get(0).ultimaModificacion != tiempoProcesador)
+        if (procesoEnCurso == null && colaProcesosListos.size() > 0 
+                && colaProcesosListos.get(0).ultimaModificacion != tiempoProcesador)
         {
             procesoEnCurso = colaProcesosListos.get(0);
             colaProcesosListos.remove(0);
 
             System.out.println("Sacando Proceso de la cola de listo, #" + procesoEnCurso.id);
-        } else if (procesoEnCurso != null)
+        } 
+        else if (procesoEnCurso != null)
         {
             System.out.println("El proceso #" + procesoEnCurso.id + " va a continuar ejecutándose");
-        } else
+        } 
+        else
         {
             System.out.println("No hay procesos listos");
         }
+        
+        System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
+
+        for (Proceso procesoEnEspera : colaProcesosListos)
+        {
+            System.out.println("El proceso #" + procesoEnEspera.id + " está en espera");
+            añadirCuadrado(Color.ORANGE, procesoEnEspera.id, tiempoProcesador);
+        }
+
+        System.out.println("****** FIN TRATAMIENTO PROCESOS EN ESPERA");
 
         if (procesoEnCurso != null)
         {
-            System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
-
-            for (Proceso procesoEnEspera : colaProcesosListos)
-            {
-                System.out.println("El proceso #" + procesoEnEspera.id + " está en espera");
-                añadirCuadrado(Color.ORANGE, procesoEnEspera.id, tiempoProcesador);
-            }
-
-            System.out.println("****** FIN TRATAMIENTO PROCESOS EN ESPERA");
-
             if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU1)
             {
                 System.out.println("El proceso #" + procesoEnCurso.id + " está en CPU1");
@@ -218,6 +237,7 @@ public class FIFS extends Algoritmo
                         // Tiene ejecución pendiente en ES
                         procesoEnCurso.estado = Constantes.PROCESO_EN_ES;
                         colaProcesosBloqueados.add(procesoEnCurso);
+                        procesoSaliente = procesoEnCurso;
                         System.out.println("El proceso #" + procesoEnCurso.id + " entra en E/S");
                         procesoEnCurso = null;
                     }
@@ -225,9 +245,11 @@ public class FIFS extends Algoritmo
                 {
                     System.out.println("El proceso #" + procesoEnCurso.id + " seguirá en CPU1");
                 }
-            } else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
+            } 
+            else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
             {
                 System.out.println("El proceso #" + procesoEnCurso.id + " está en CPU2");
+                
                 procesoEnCurso.tiempoEjecutadoEnCPU2++;
                 añadirCuadrado(Color.GREEN, procesoEnCurso.id, tiempoProcesador);
 

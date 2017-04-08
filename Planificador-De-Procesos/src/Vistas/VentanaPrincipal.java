@@ -1,21 +1,20 @@
 package Vistas;
 
 import Algoritmos.Algoritmo;
-import Utils.Constantes;
 import Algoritmos.Implementacion.FIFS;
 import Procesos.Proceso;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.JLabel;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
-import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /*
@@ -33,11 +32,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     protected List<Proceso> procesos;
 
-    private Boolean FIFS;
+    private Boolean FIFS, RR, SJF;
 
     private Algoritmo algoritmo;
 
-    public DefaultTableModel model, modelCola;
+    public DefaultTableModel modelTblProcesos, modelNoLlegados;
 
     public BufferedImage bufferPanelGantt, vacio;
     
@@ -56,8 +55,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.procesos = new ArrayList<>();
 
         // Inicialización de los modelos de las tablas
-        this.model = (DefaultTableModel) tablaProcesos.getModel();
-        this.modelCola = (DefaultTableModel) tablaProcesos.getModel();
+        this.modelTblProcesos = (DefaultTableModel) tblProcesos.getModel();
+        this.modelNoLlegados = (DefaultTableModel) tblNoLlegados.getModel();
 
         // Inicialización de botones
         this.btnListo.setEnabled(false);
@@ -89,7 +88,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     {
 
         panelGantt = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
+        pnlControl = new javax.swing.JPanel();
         btnSimular = new javax.swing.JButton();
         btnAniadirProceso = new javax.swing.JButton();
         chxFIFS = new javax.swing.JCheckBox();
@@ -98,25 +97,23 @@ public class VentanaPrincipal extends javax.swing.JFrame
         btnPasoSiguiente = new javax.swing.JButton();
         btnListo = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablaProcesos = new javax.swing.JTable();
+        tblProcesos = new javax.swing.JTable();
         spColaProcesosListos = new javax.swing.JScrollPane();
         tblColaProcesosListos = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        tblNoLlegados = new javax.swing.JTable();
+        lblColaProcesos = new javax.swing.JLabel();
+        lblNoLlegados = new javax.swing.JLabel();
+        lblColaListos = new javax.swing.JLabel();
+        lblCronograma = new javax.swing.JLabel();
+        lblPanelControl = new javax.swing.JLabel();
+        lblColaBloqueados = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblColaBloqueados = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Simulador planificador de procesos");
-        setMaximumSize(new java.awt.Dimension(99999, 99999));
         setMinimumSize(new java.awt.Dimension(1060, 620));
-        setPreferredSize(new java.awt.Dimension(1060, 620));
         setResizable(false);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
@@ -153,9 +150,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
         getContentPane().add(panelGantt, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 350, 1040, 240));
         panelGantt.getAccessibleContext().setAccessibleName("");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
+        pnlControl.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 153, 153)));
 
-        btnSimular.setText("Simular");
+        btnSimular.setText(">>");
         btnSimular.setMaximumSize(new java.awt.Dimension(138, 29));
         btnSimular.setMinimumSize(new java.awt.Dimension(138, 29));
         btnSimular.addMouseListener(new java.awt.event.MouseAdapter()
@@ -166,7 +163,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         });
 
-        btnAniadirProceso.setText("Añadir Proceso");
+        btnAniadirProceso.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
+        btnAniadirProceso.setText("+");
         btnAniadirProceso.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mousePressed(java.awt.event.MouseEvent evt)
@@ -202,7 +200,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         });
 
-        btnPasoSiguiente.setText("Paso Siguiente");
+        btnPasoSiguiente.setText(">");
         btnPasoSiguiente.addMouseListener(new java.awt.event.MouseAdapter()
         {
             public void mousePressed(java.awt.event.MouseEvent evt)
@@ -220,50 +218,53 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlControlLayout = new javax.swing.GroupLayout(pnlControl);
+        pnlControl.setLayout(pnlControlLayout);
+        pnlControlLayout.setHorizontalGroup(
+            pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlControlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlControlLayout.createSequentialGroup()
                         .addComponent(chxFIFS)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chxSJF))
-                    .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnListo)
-                    .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chxRR))
-                .addContainerGap(180, Short.MAX_VALUE))
+                        .addComponent(chxSJF)
+                        .addGap(19, 19, 19)
+                        .addComponent(chxRR))
+                    .addGroup(pnlControlLayout.createSequentialGroup()
+                        .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnListo))
+                    .addGroup(pnlControlLayout.createSequentialGroup()
+                        .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(282, Short.MAX_VALUE))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        pnlControlLayout.setVerticalGroup(
+            pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlControlLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAniadirProceso)
                     .addComponent(btnListo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chxFIFS)
                     .addComponent(chxSJF)
                     .addComponent(chxRR))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPasoSiguiente)
                     .addComponent(btnSimular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(49, 49, 49))
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, 470, 106));
+        getContentPane().add(pnlControl, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, 470, 106));
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(454, 404));
 
-        tablaProcesos.setModel(new javax.swing.table.DefaultTableModel(
+        tblProcesos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][]
             {
 
@@ -293,21 +294,33 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 return canEdit [columnIndex];
             }
         });
-        tablaProcesos.setToolTipText("");
-        tablaProcesos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        tablaProcesos.setShowGrid(true);
-        tablaProcesos.getTableHeader().setReorderingAllowed(false);
-        jScrollPane1.setViewportView(tablaProcesos);
-        if (tablaProcesos.getColumnModel().getColumnCount() > 0)
+        tblProcesos.setToolTipText(null);
+        tblProcesos.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        tblProcesos.setShowGrid(true);
+        tblProcesos.getTableHeader().setReorderingAllowed(false);
+        jScrollPane1.setViewportView(tblProcesos);
+        if (tblProcesos.getColumnModel().getColumnCount() > 0)
         {
-            tablaProcesos.getColumnModel().getColumn(0).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(1).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(2).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(3).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(4).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(5).setResizable(false);
-            tablaProcesos.getColumnModel().getColumn(6).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(0).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(1).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(2).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(3).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(4).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(5).setResizable(false);
+            tblProcesos.getColumnModel().getColumn(6).setResizable(false);
         }
+        DefaultTableCellRenderer centerRendererTblProcesos = new DefaultTableCellRenderer();
+        centerRendererTblProcesos.setHorizontalAlignment( JLabel.CENTER );
+        tblProcesos.getColumnModel().getColumn(0).setCellRenderer(centerRendererTblProcesos);
+        tblProcesos.getColumnModel().getColumn(1).setCellRenderer(centerRendererTblProcesos);
+        tblProcesos.getColumnModel().getColumn(2).setCellRenderer(centerRendererTblProcesos);
+        tblProcesos.getColumnModel().getColumn(3).setCellRenderer(centerRendererTblProcesos);
+        tblProcesos.getColumnModel().getColumn(4).setCellRenderer(centerRendererTblProcesos );
+        tblProcesos.getColumnModel().getColumn(5).setCellRenderer(centerRendererTblProcesos);
+        tblProcesos.getColumnModel().getColumn(6).setCellRenderer(centerRendererTblProcesos);
+
+        ((DefaultTableCellRenderer)tblProcesos.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.CENTER);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 531, 107));
 
@@ -326,7 +339,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             Class[] types = new Class []
             {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean []
             {
@@ -362,59 +375,22 @@ public class VentanaPrincipal extends javax.swing.JFrame
             tblColaProcesosListos.getColumnModel().getColumn(4).setResizable(false);
             tblColaProcesosListos.getColumnModel().getColumn(5).setResizable(false);
         }
+        ((DefaultTableCellRenderer)tblColaProcesosListos.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.CENTER);
+
+        DefaultTableCellRenderer centerRenderertblColaProcesosListos= new DefaultTableCellRenderer();
+        centerRenderertblColaProcesosListos.setHorizontalAlignment( JLabel.CENTER );
+        tblColaProcesosListos.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblColaProcesosListos);
+        tblColaProcesosListos.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblColaProcesosListos);
+        tblColaProcesosListos.getColumnModel().getColumn(2).setCellRenderer(centerRenderertblColaProcesosListos);
+        tblColaProcesosListos.getColumnModel().getColumn(3).setCellRenderer(centerRenderertblColaProcesosListos);
+        tblColaProcesosListos.getColumnModel().getColumn(4).setCellRenderer(centerRenderertblColaProcesosListos);
+        tblColaProcesosListos.getColumnModel().getColumn(5).setCellRenderer(centerRenderertblColaProcesosListos);
 
         getContentPane().add(spColaProcesosListos, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 450, 107));
         spColaProcesosListos.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(454, 107));
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][]
-            {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String []
-            {
-                "Id", "E/S", "E/S Restante"
-            }
-        )
-        {
-            Class[] types = new Class []
-            {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean []
-            {
-                false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex)
-            {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex)
-            {
-                return canEdit [columnIndex];
-            }
-        });
-        jTable1.setMinimumSize(new java.awt.Dimension(90, 0));
-        jTable1.setPreferredSize(new java.awt.Dimension(450, 0));
-        jScrollPane2.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0)
-        {
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-        }
-        Dimension d1 = jTable1.getPreferredSize();
-        jScrollPane2.setPreferredSize(
-            new Dimension(d1.width,jTable1.getRowHeight()*5+1));
-
-        getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 190, 290, 107));
-
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        tblNoLlegados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][]
             {
 
@@ -444,51 +420,105 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(jTable2);
-        if (jTable2.getColumnModel().getColumnCount() > 0)
+        jScrollPane3.setViewportView(tblNoLlegados);
+        if (tblNoLlegados.getColumnModel().getColumnCount() > 0)
         {
-            jTable2.getColumnModel().getColumn(0).setResizable(false);
-            jTable2.getColumnModel().getColumn(1).setResizable(false);
+            tblNoLlegados.getColumnModel().getColumn(0).setResizable(false);
+            tblNoLlegados.getColumnModel().getColumn(1).setResizable(false);
         }
+        ((DefaultTableCellRenderer)tblNoLlegados.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.CENTER);
+
+        DefaultTableCellRenderer centerRenderertblNoLlegados= new DefaultTableCellRenderer();
+        centerRenderertblNoLlegados.setHorizontalAlignment( JLabel.CENTER );
+        tblNoLlegados.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblNoLlegados);
+        tblNoLlegados.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblNoLlegados);
 
         getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 190, 180, 107));
 
-        jLabel1.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel1.setText("Cola de procesos");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, -1, -1));
+        lblColaProcesos.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblColaProcesos.setText("Cola de procesos");
+        getContentPane().add(lblColaProcesos, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 10, -1, -1));
 
-        jLabel2.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel2.setText("No llegados");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 160, -1, -1));
+        lblNoLlegados.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblNoLlegados.setText("No llegados");
+        getContentPane().add(lblNoLlegados, new org.netbeans.lib.awtextra.AbsoluteConstraints(900, 160, -1, -1));
 
-        jLabel3.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel3.setText("Cola de listos");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, -1, -1));
+        lblColaListos.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblColaListos.setText("Cola de listos");
+        getContentPane().add(lblColaListos, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 160, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel4.setText("Cronograma");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 320, -1, -1));
+        lblCronograma.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblCronograma.setText("Cronograma");
+        getContentPane().add(lblCronograma, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 320, -1, -1));
 
-        jLabel5.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel5.setText("Panel de control");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 10, -1, -1));
+        lblPanelControl.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblPanelControl.setText("Panel de control");
+        getContentPane().add(lblPanelControl, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 10, -1, -1));
 
-        jLabel6.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
-        jLabel6.setText("Cola de bloqueados");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 160, -1, -1));
+        lblColaBloqueados.setFont(new java.awt.Font("Lucida Console", 0, 18)); // NOI18N
+        lblColaBloqueados.setText("Cola de bloqueados");
+        getContentPane().add(lblColaBloqueados, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 160, -1, -1));
+
+        tblColaBloqueados.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][]
+            {
+
+            },
+            new String []
+            {
+                "Id", "E/S", "E/S Restante"
+            }
+        )
+        {
+            Class[] types = new Class []
+            {
+                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean []
+            {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex)
+            {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex)
+            {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane4.setViewportView(tblColaBloqueados);
+        if (tblColaBloqueados.getColumnModel().getColumnCount() > 0)
+        {
+            tblColaBloqueados.getColumnModel().getColumn(0).setResizable(false);
+            tblColaBloqueados.getColumnModel().getColumn(1).setResizable(false);
+            tblColaBloqueados.getColumnModel().getColumn(2).setResizable(false);
+        }
+        ((DefaultTableCellRenderer)tblColaBloqueados.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.CENTER);
+
+        DefaultTableCellRenderer centerRenderertblColaBloqueados= new DefaultTableCellRenderer();
+        centerRenderertblColaBloqueados.setHorizontalAlignment( JLabel.CENTER );
+        tblColaBloqueados.getColumnModel().getColumn(0).setCellRenderer(centerRenderertblColaBloqueados);
+        tblColaBloqueados.getColumnModel().getColumn(1).setCellRenderer(centerRenderertblColaBloqueados);
+        tblColaBloqueados.getColumnModel().getColumn(2).setCellRenderer(centerRenderertblColaBloqueados);
+
+        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 190, 260, 107));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAniadirProcesoMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnAniadirProcesoMousePressed
     {//GEN-HEADEREND:event_btnAniadirProcesoMousePressed
-        this.prepararDiagramaGantt();
-        
+        this.prepararDiagramaGantt();        
         if (idProceso != 6)
         {
-            model.addRow(new Object[]
+            modelTblProcesos.addRow(new Object[]
         {
-            idProceso, 0, 1, 0, 0, 1
+            idProceso, 0, 3, 3, 5, 1
         });
         idProceso++;
         btnListo.setEnabled(true);
@@ -517,14 +547,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
         btnListo.setEnabled(false);
         btnSimular.setEnabled(true);
         btnPasoSiguiente.setEnabled(true);
-        tablaProcesos.setEnabled(false);
-        tablaProcesos.setEnabled(false);
+        tblProcesos.setEnabled(false);
         chxFIFS.setEnabled(false);
         chxRR.setEnabled(false);
         chxSJF.setEnabled(false);
         añadirProcesosDesdeTabla();
-        volcarProcesosEnCola();
-        algoritmo = new FIFS(procesos, tablaProcesos, graficaPanel, graficaBuffer, bufferPanelGantt);
+        //volcarProcesosEnCola();
+        algoritmo = new FIFS(procesos, tblProcesos, tblColaProcesosListos, tblColaBloqueados,
+                tblNoLlegados, graficaPanel, graficaBuffer, bufferPanelGantt);
     }//GEN-LAST:event_btnListoActionPerformed
 
     private void chxFIFSMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_chxFIFSMousePressed
@@ -547,12 +577,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     private void panelGanttComponentAdded(java.awt.event.ContainerEvent evt)//GEN-FIRST:event_panelGanttComponentAdded
     {//GEN-HEADEREND:event_panelGanttComponentAdded
-              this.prepararDiagramaGantt();
+        this.prepararDiagramaGantt();
     }//GEN-LAST:event_panelGanttComponentAdded
 
     private void panelGanttComponentShown(java.awt.event.ComponentEvent evt)//GEN-FIRST:event_panelGanttComponentShown
     {//GEN-HEADEREND:event_panelGanttComponentShown
-              this.prepararDiagramaGantt();
+        this.prepararDiagramaGantt();
     }//GEN-LAST:event_panelGanttComponentShown
 
     /**
@@ -599,20 +629,19 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 new VentanaPrincipal().setVisible(true);
             }
         });
-        
-        
+       
     }
 
     private void añadirProcesosDesdeTabla()
     {
-        for (int i = 0; i < tablaProcesos.getRowCount(); i++)
+        for (int i = 0; i < tblProcesos.getRowCount(); i++)
         {
-            procesos.add(new Proceso((int) tablaProcesos.getValueAt(i, 0),
-                    (int) tablaProcesos.getValueAt(i, 1),
-                    (int) tablaProcesos.getValueAt(i, 2),
-                    (int) tablaProcesos.getValueAt(i, 3),
-                    (int) tablaProcesos.getValueAt(i, 4),
-                    (int) tablaProcesos.getValueAt(i, 5),
+            procesos.add(new Proceso((int) tblProcesos.getValueAt(i, 0),
+                    (int) tblProcesos.getValueAt(i, 1),
+                    (int) tblProcesos.getValueAt(i, 2),
+                    (int) tblProcesos.getValueAt(i, 3),
+                    (int) tblProcesos.getValueAt(i, 4),
+                    (int) tblProcesos.getValueAt(i, 5),
                     null));
         }
     }
@@ -624,9 +653,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
         while (iterador.hasNext())
         {
             Proceso current = (Proceso) iterador.next();
-            modelCola.addRow(new Object[]
+            modelNoLlegados.addRow(new Object[]
             {
-                i, current.id, current.prioridad, "1"
+                current.id, current.tiempoDeLlegada
             });
             i++;
         }
@@ -683,21 +712,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JCheckBox chxFIFS;
     private javax.swing.JCheckBox chxRR;
     private javax.swing.JCheckBox chxSJF;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblColaBloqueados;
+    private javax.swing.JLabel lblColaListos;
+    private javax.swing.JLabel lblColaProcesos;
+    private javax.swing.JLabel lblCronograma;
+    private javax.swing.JLabel lblNoLlegados;
+    private javax.swing.JLabel lblPanelControl;
     private javax.swing.JPanel panelGantt;
+    private javax.swing.JPanel pnlControl;
     private javax.swing.JScrollPane spColaProcesosListos;
-    private javax.swing.JTable tablaProcesos;
+    private javax.swing.JTable tblColaBloqueados;
     private javax.swing.JTable tblColaProcesosListos;
+    private javax.swing.JTable tblNoLlegados;
+    private javax.swing.JTable tblProcesos;
     // End of variables declaration//GEN-END:variables
 }

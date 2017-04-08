@@ -36,11 +36,6 @@ public class Proceso
         this.tiempoCPU2 = tiempoCPU2;
         this.tiempoES = tiempoES;
         
-        this.barraDeProgreso = barraDeProgreso;
-        this.barraDeProgreso.setValue(0);
-        this.barraDeProgreso.setMaximum(100);
-        this.barraDeProgreso.setMinimum(0);
-        
         this.estado = Constantes.PROCESO_EN_CPU1;
         
         this.tiempoEjecutadoEnCPU1 = 0;
@@ -55,8 +50,11 @@ public class Proceso
      * 
      * @return 
      */
-    public int getPorcentajeCompletado()
+    public String getPorcentajeCompletado()
     {
-        return 1; 
+        int completado = tiempoEjecutadoEnCPU1 + tiempoEjecutadoEnCPU2 + tiempoEjecutadoEnES;
+        int total = tiempoCPU1 + tiempoCPU2 + tiempoES;
+        
+        return (completado * 100) / total + "%"; 
     }
 }

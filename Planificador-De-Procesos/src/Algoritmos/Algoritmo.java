@@ -29,15 +29,13 @@ public abstract class Algoritmo
 {
     protected int tiempoProcesador = 0;
     
-    protected JTable tblColaProcesos;
+    protected JTable tblColaProcesos, tblColaProcesosListos, tblColaProcesosBloqueados, tblColaProcesosSinLlegar;
 
-    protected List<Proceso> colaProcesosListos, colaProcesosBloqueados, colaProcesosSinLlegar;
+    protected List<Proceso> procesos, colaProcesosListos, colaProcesosBloqueados, colaProcesosSinLlegar;
 
-    protected Proceso procesoEnCurso;
+    protected Proceso procesoEnCurso, procesoSaliente;
 
-    protected int cursorRectanguloGantt;
-
-    protected DefaultTableModel modelTblColaProcesos;
+    protected DefaultTableModel modelTblColaProcesos, modelTblColaProcesosListos, modelTblColaProcesosBloqueados, modelTblColaProcesosSinLlegar;;
 
     protected boolean fin, inicio;
 
@@ -53,28 +51,46 @@ public abstract class Algoritmo
      */
     protected BufferedImage bufferPanelGantt, vacio;
 
-    public Algoritmo(List<Proceso> procesos, javax.swing.JTable tblColaProcesos, 
-            Graphics2D graficaPanel, Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
+    public Algoritmo(List<Proceso> procesos, JTable tblColaProcesos,
+            JTable tblColaProcesosListos, JTable tblColaProcesosBloqueados,
+            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel, 
+            Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
     {
+        // Inicialización listas
+        this.procesos = procesos;
         this.colaProcesosListos = new ArrayList<>();
         this.colaProcesosSinLlegar = new ArrayList<>();
         this.colaProcesosBloqueados = new ArrayList<>();
         
+        // Ordenamos los procesos por orden de llegada y prioridad
         this.organizarProcesos(procesos);
-
-        //this.colaProcesosListos = procesos;
+        
+        // Ponemos el proceso en curso a null
         this.procesoEnCurso = null;
+        
+        // Inicialización tablas
         this.tblColaProcesos = tblColaProcesos;
+        this.tblColaProcesosListos = tblColaProcesosListos;
+        this.tblColaProcesosBloqueados = tblColaProcesosBloqueados;
+        this.tblColaProcesosSinLlegar = tblColaProcesosSinLlegar;
+        
+        // Inicialización modelos
         this.modelTblColaProcesos = (DefaultTableModel) this.tblColaProcesos.getModel();
+        this.modelTblColaProcesosListos = (DefaultTableModel) this.tblColaProcesosListos.getModel();
+        this.modelTblColaProcesosBloqueados = (DefaultTableModel) this.tblColaProcesosBloqueados.getModel();
+        this.modelTblColaProcesosSinLlegar = (DefaultTableModel) this.tblColaProcesosSinLlegar.getModel();
+        
+        // Inicialización variables del programa
         this.fin = false;
         this.inicio = false;
 
-        
-        this.cursorRectanguloGantt = 5;
-
+        // Inicialización de los elementos del cronograma
         this.bufferPanelGantt = bufferPanelGantt;
         this.graficaPanel = graficaPanel;
         this.graficaBuffer = graficaBuffer;
+        
+        // Repintamos las tablas
+        this.repintarTablas();    
     }
 
     public BufferedImage copiarBuffer(BufferedImage buffer)
@@ -117,12 +133,86 @@ public abstract class Algoritmo
         graficaPanel.drawImage(bufferPanelGantt, 0, 0, null);
     }
 
-    public void añadirProcesoACola(int posicion, int idProceso, int prioridad, Color color)
+    public void repintarColaProcesosSinLlegar()
     {
-        modelTblColaProcesos.addRow(new Object[]
+        limpiarTabla(modelTblColaProcesosSinLlegar);
+        for (Proceso proceso : colaProcesosSinLlegar)
         {
-            posicion, idProceso, prioridad, color
-        });
+            modelTblColaProcesosSinLlegar.addRow(new Object[]
+            {
+                proceso.id, proceso.tiempoDeLlegada
+            });
+        }
+    }
+    
+    public void repintarColaProcesosListos()
+    {
+        limpiarTabla(modelTblColaProcesosListos);
+        
+        if (procesoEnCurso != null)
+        {
+            modelTblColaProcesosListos.addRow(new Object[]
+            {
+                "Ejecutando", procesoEnCurso.id, procesoEnCurso.tiempoCPU1, procesoEnCurso.tiempoES, 
+                procesoEnCurso.tiempoCPU2, procesoEnCurso.prioridad
+            });
+        }
+        else if (procesoSaliente != null)
+        {
+            modelTblColaProcesosListos.addRow(new Object[]
+            {
+                "Saliendo", procesoSaliente.id, procesoSaliente.tiempoCPU1, procesoSaliente.tiempoES, 
+                procesoSaliente.tiempoCPU2, procesoSaliente.prioridad
+            });
+        }
+            
+        int i = 1;
+        for (Proceso proceso : colaProcesosListos)
+        {
+            modelTblColaProcesosListos.addRow(new Object[]
+            {
+                i + "", proceso.id, proceso.id, proceso.tiempoCPU1, proceso.tiempoES,
+                proceso.tiempoCPU2, proceso.prioridad
+            });
+
+            i++;
+        }
+    }
+    
+     public void repintarColaProcesos()
+    {
+        limpiarTabla(modelTblColaProcesos);
+        int i = 1;
+        for (Proceso proceso : procesos)
+        {
+            modelTblColaProcesos.addRow(new Object[]
+            {
+                proceso.id, proceso.tiempoDeLlegada, proceso.tiempoCPU1, proceso.tiempoES, 
+                proceso.tiempoCPU2, proceso.prioridad, proceso.getPorcentajeCompletado()
+            });
+            i++;
+        }
+    }
+    
+    public void repintarColaProcesosBloqueados()
+    {
+        limpiarTabla(modelTblColaProcesosBloqueados);
+        for (Proceso proceso : colaProcesosBloqueados)
+        {
+            modelTblColaProcesosBloqueados.addRow(new Object[]
+            {
+                proceso.id, proceso.tiempoES, (proceso.tiempoES - proceso.tiempoEjecutadoEnES)
+            });
+        }
+    }
+    
+    public void limpiarTabla(DefaultTableModel model)
+    {
+        int rowCount = model.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) 
+        {
+            model.removeRow(i);
+        }
     }
     
     public void rellenarCuadrado(BufferedImage image, Point node, Color targetColor, Color replacementColor)
@@ -167,6 +257,14 @@ public abstract class Algoritmo
                 }
             } while ((node = queue.pollFirst()) != null);
         }
+    }
+    
+    public void repintarTablas()
+    {
+        this.repintarColaProcesos();
+        this.repintarColaProcesosBloqueados();
+        this.repintarColaProcesosListos();
+        this.repintarColaProcesosSinLlegar();
     }
 
     public abstract boolean run(int seconds);
