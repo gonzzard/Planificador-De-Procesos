@@ -12,24 +12,31 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 
 /**
  *
  *
  */
-public class FIFS extends Algoritmo
+public class RR extends Algoritmo
 {
-    public int tiempoDeEspera;
-    public int tiempoDeEjecucion;
+    public int quantum;
+    public int quantumRestantes;
+    public JLabel lblCiclosRestanes;
 
-    public FIFS(List<Proceso> procesos, JTable tblColaProcesos,
+    public RR(List<Proceso> procesos, JTable tblColaProcesos,
             JTable tblColaProcesosListos, JTable tblColaProcesosBloqueados,
-            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel, 
-            Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
+            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel,
+            Graphics2D graficaBuffer, BufferedImage bufferPanelGantt, int quantum, JLabel lblCiclosRestanes)
     {
         super(procesos, tblColaProcesos, tblColaProcesosListos, tblColaProcesosBloqueados,
                 tblColaProcesosSinLlegar, graficaPanel, graficaBuffer, bufferPanelGantt);
+
+        this.quantum = quantum;
+        this.quantumRestantes = quantum;
+        this.lblCiclosRestanes = lblCiclosRestanes;
+        this.lblCiclosRestanes.setText("CiclosRestantes : " + this.quantumRestantes);
     }
 
     @Override
@@ -48,23 +55,23 @@ public class FIFS extends Algoritmo
         if (!fin)
         {
             System.out.println("*********************** T = " + tiempoProcesador);
-            
+
             procesoSaliente = null;
-            
+
             tratarColaProcesosSinLlegar();
-            
+
             repintarColaProcesosSinLlegar();
 
-            tratarColaProcesosBloqueados();     
-            
+            tratarColaProcesosBloqueados();
+
             repintarColaProcesosBloqueados();
-            
-            tratarColaProcesosListos();  
-            
+
+            tratarColaProcesosListos();
+
             repintarColaProcesosListos();
-            
+
             repintarColaProcesosBloqueados();
-            
+
             repintarColaProcesos();
 
             if (colaProcesosSinLlegar.isEmpty() && colaProcesosListos.isEmpty()
@@ -78,8 +85,7 @@ public class FIFS extends Algoritmo
 
             System.out.println("********************************************");
             System.out.println("********************************************\n");
-        }
-        else
+        } else
         {
             System.out.println("*** FIN DE LA SIMULACIÓN");
             System.out.println("********************************************");
@@ -156,6 +162,8 @@ public class FIFS extends Algoritmo
                     procesoBloqueado.estado = Constantes.PROCESO_COMPLETADO;
                     procesoBloqueado.ultimaModificacion = tiempoProcesador;
                     System.out.println("El proceso #" + procesoBloqueado.id + " sale a bloqueado y termina su ejecución");
+                    this.quantumRestantes = quantum;
+                    actualizarLblCiclosRestantes();
                 } else
                 {
                     // Tiene pendiente su ejecución en CPU2, entra en CPU2
@@ -177,7 +185,7 @@ public class FIFS extends Algoritmo
         System.out.println("*** INICIO TRATAMIENTO NUEVO PROCESO DE COLA DE LISTOS");
 
         // Saco un proceso y le hago ejecutarse
-        if (procesoEnCurso == null && colaProcesosListos.size() > 0 
+        if (procesoEnCurso == null && colaProcesosListos.size() > 0
                 && colaProcesosListos.get(0).ultimaModificacion != tiempoProcesador)
         {
             procesoEnCurso = colaProcesosListos.get(0);
@@ -185,15 +193,27 @@ public class FIFS extends Algoritmo
 
             System.out.println("Sacando Proceso de la cola de listo, #" + procesoEnCurso.id);
         } 
-        else if (procesoEnCurso != null)
+        else if (procesoEnCurso != null && quantumRestantes != 0)
         {
             System.out.println("El proceso #" + procesoEnCurso.id + " va a continuar ejecutándose");
+        } 
+        else if (quantumRestantes == 0)
+        {
+            System.out.println("Al proceso #" + procesoEnCurso.id + " se le ha terminado el tiempo, expulsandolo de procesador");
+            System.out.println("Añadiendo proceso #" + procesoEnCurso.id + " a la cola de listos");
+            colaProcesosListos.add(procesoEnCurso);
+            System.out.println("Sacando el proceso #" + procesoEnCurso.id + " de cola de listos");
+            procesoEnCurso = colaProcesosListos.get(0);
+            colaProcesosListos.remove(0);
+            System.out.println("Reseteando quantum");
+            this.quantumRestantes = this.quantum;
+            actualizarLblCiclosRestantes();
         } 
         else
         {
             System.out.println("No hay procesos listos");
         }
-        
+
         System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
 
         for (Proceso procesoEnEspera : colaProcesosListos)
@@ -211,11 +231,13 @@ public class FIFS extends Algoritmo
             {
                 System.out.println("El proceso #" + procesoEnCurso.id + " está en CPU1");
                 procesoEnCurso.tiempoEjecutadoEnCPU1++;
+                actualizarLblCiclosRestantes();
+                quantumRestantes--;
                 añadirCuadrado(Color.GREEN, procesoEnCurso.id, tiempoProcesador);
 
                 if (procesoEnCurso.tiempoEjecutadoEnCPU1 == procesoEnCurso.tiempoCPU1)
                 {
-                    //Ha terminado su ejecución en CPU1
+                    // Ha terminado su ejecución en CPU1
                     if (procesoEnCurso.tiempoEjecutadoEnES == procesoEnCurso.tiempoES)
                     {
                         // No tiene pendiente ejecución en ES
@@ -225,6 +247,8 @@ public class FIFS extends Algoritmo
                             procesoEnCurso.estado = Constantes.PROCESO_COMPLETADO;
                             System.out.println("El proceso #" + procesoEnCurso.id + " ha terminado");
                             procesoEnCurso = null;
+                            this.quantumRestantes = quantum;
+                            actualizarLblCiclosRestantes();
                         } else
                         {
                             // Tiene pendiente su ejecución en CPU2, entra en CPU2
@@ -232,6 +256,8 @@ public class FIFS extends Algoritmo
                             colaProcesosListos.add(procesoEnCurso);
                             System.out.println("El proceso #" + procesoEnCurso.id + " entra en CPU2");
                             procesoEnCurso = null;
+                            this.quantumRestantes = quantum;
+                            actualizarLblCiclosRestantes();
                         }
                     } else
                     {
@@ -241,17 +267,20 @@ public class FIFS extends Algoritmo
                         procesoSaliente = procesoEnCurso;
                         System.out.println("El proceso #" + procesoEnCurso.id + " entra en E/S");
                         procesoEnCurso = null;
+                        this.quantumRestantes = quantum;
+                        actualizarLblCiclosRestantes();
                     }
                 } else
                 {
                     System.out.println("El proceso #" + procesoEnCurso.id + " seguirá en CPU1");
                 }
-            } 
-            else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
+            } else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
             {
                 System.out.println("El proceso #" + procesoEnCurso.id + " está en CPU2");
-                
+
                 procesoEnCurso.tiempoEjecutadoEnCPU2++;
+                actualizarLblCiclosRestantes();
+                quantumRestantes--;
                 añadirCuadrado(Color.GREEN, procesoEnCurso.id, tiempoProcesador);
 
                 if (procesoEnCurso.tiempoEjecutadoEnCPU2 == procesoEnCurso.tiempoCPU2)
@@ -260,10 +289,17 @@ public class FIFS extends Algoritmo
                     System.out.println("El proceso #" + procesoEnCurso.id + " ha terminado");
                     procesoEnCurso.estado = Constantes.PROCESO_COMPLETADO;
                     procesoEnCurso = null;
+                    this.quantumRestantes = quantum;
+                    actualizarLblCiclosRestantes();
                 }
             }
         }
 
         System.out.println("*** FIN TRATAMIENTO NUEVO PROCESO DE COLA DE LISTOS \n");
+    }
+
+    private void actualizarLblCiclosRestantes()
+    {
+        this.lblCiclosRestanes.setText("CiclosRestantes : " + this.quantumRestantes);
     }
 }

@@ -1,40 +1,60 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Procesos;
 
-
 import Utils.Constantes;
-import javax.swing.JProgressBar;
 
 /**
- *
- * 
+ * Clase que representa un proceso en un sistema operativo
  */
 public class Proceso
 {
 
+    /**
+     * Identificador único del proceso.
+     */
     public int id;
+    
+    /**
+     * Tiempos del procesador en CPU1, E/S y CPU2.
+     */
     public int tiempoCPU1, tiempoCPU2, tiempoES;
+    
+    /**
+     * Prioridad del proceso.
+     */
     public int prioridad;
+    
+    /**
+     * Estado actual del proceso.
+     */
     public int estado;
-    public JProgressBar barraDeProgreso;
     public int tiempoDeLlegada;
     public int tiempoEjecutadoEnCPU1, tiempoEjecutadoEnCPU2, tiempoEjecutadoEnES;
     public int tiempoDeSalida;
     public int ultimaModificacion;
+    
+    //Estadisticas
+    public int tiempoDeEsperaAcum;
 
 
+    /**
+     * Constructor con parámetros.
+     * 
+     * @param id Identificador único del proceso.
+     * @param tiempoDeLlegada Tiempo de llegada del proceso.
+     * @param tiempoCPU1 Tiempo del proceso en CPU1.
+     * @param tiempoES Tiempo del proceso en E/S.
+     * @param tiempoCPU2 Tiempo del proceso en CPU2.
+     * @param prioridad Prioridad del proceso
+     */
     public Proceso(int id, int tiempoDeLlegada, int tiempoCPU1, int tiempoES,
-            int tiempoCPU2, int prioridad, JProgressBar barraDeProgreso)
+            int tiempoCPU2, int prioridad)
     {
         this.id = id;
         this.tiempoDeLlegada = tiempoDeLlegada;
         this.tiempoCPU1 = tiempoCPU1;
         this.tiempoCPU2 = tiempoCPU2;
         this.tiempoES = tiempoES;
+        this.prioridad = prioridad;
         
         this.estado = Constantes.PROCESO_EN_CPU1;
         
@@ -44,11 +64,13 @@ public class Proceso
         this.tiempoDeSalida = tiempoCPU1 + tiempoCPU2 + tiempoES;
         
         this.ultimaModificacion = -1;
+        this.tiempoDeEsperaAcum = 0;
     }
     
     /**
+     * Devuelve el porcentaje completado del proceso.
      * 
-     * @return 
+     * @return Devuelve el procejate completado del proceso en formato xxx%
      */
     public String getPorcentajeCompletado()
     {

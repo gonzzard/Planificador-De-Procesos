@@ -108,7 +108,19 @@ public abstract class Algoritmo
             if (p1.tiempoDeLlegada < p2.tiempoDeLlegada)
             {
                 return -1;
-            } else
+            } 
+            else if (p1.tiempoDeLlegada == p2.tiempoDeLlegada)
+            {
+                if (p1.prioridad < p2.prioridad)
+                {
+                    return -1;
+                } 
+                else
+                {
+                    return 1;
+                }
+            }
+            else
             {
                 return 1;
             }
@@ -140,7 +152,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesosSinLlegar.addRow(new Object[]
             {
-                proceso.id, proceso.tiempoDeLlegada
+                "#" + proceso.id, proceso.tiempoDeLlegada
             });
         }
     }
@@ -153,7 +165,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesosListos.addRow(new Object[]
             {
-                "Ejecutando", procesoEnCurso.id, procesoEnCurso.tiempoCPU1, procesoEnCurso.tiempoES, 
+                "Ejecutando", "#" + procesoEnCurso.id, procesoEnCurso.tiempoCPU1, procesoEnCurso.tiempoES, 
                 procesoEnCurso.tiempoCPU2, procesoEnCurso.prioridad
             });
         }
@@ -161,7 +173,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesosListos.addRow(new Object[]
             {
-                "Saliendo", procesoSaliente.id, procesoSaliente.tiempoCPU1, procesoSaliente.tiempoES, 
+                "Saliendo", "#" + procesoSaliente.id, procesoSaliente.tiempoCPU1, procesoSaliente.tiempoES, 
                 procesoSaliente.tiempoCPU2, procesoSaliente.prioridad
             });
         }
@@ -171,7 +183,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesosListos.addRow(new Object[]
             {
-                i + "", proceso.id, proceso.id, proceso.tiempoCPU1, proceso.tiempoES,
+                i + "º", "#" + proceso.id, proceso.tiempoCPU1, proceso.tiempoES,
                 proceso.tiempoCPU2, proceso.prioridad
             });
 
@@ -187,7 +199,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesos.addRow(new Object[]
             {
-                proceso.id, proceso.tiempoDeLlegada, proceso.tiempoCPU1, proceso.tiempoES, 
+                "#" + proceso.id, proceso.tiempoDeLlegada, proceso.tiempoCPU1, proceso.tiempoES, 
                 proceso.tiempoCPU2, proceso.prioridad, proceso.getPorcentajeCompletado()
             });
             i++;
@@ -201,7 +213,7 @@ public abstract class Algoritmo
         {
             modelTblColaProcesosBloqueados.addRow(new Object[]
             {
-                proceso.id, proceso.tiempoES, (proceso.tiempoES - proceso.tiempoEjecutadoEnES)
+                "#" + proceso.id, proceso.tiempoES, (proceso.tiempoES - proceso.tiempoEjecutadoEnES)
             });
         }
     }

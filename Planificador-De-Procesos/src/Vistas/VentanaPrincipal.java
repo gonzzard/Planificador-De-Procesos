@@ -2,6 +2,7 @@ package Vistas;
 
 import Algoritmos.Algoritmo;
 import Algoritmos.Implementacion.FIFS;
+import Algoritmos.Implementacion.RR;
 import Procesos.Proceso;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,13 +10,24 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.general.DefaultPieDataset;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -39,7 +51,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     public DefaultTableModel modelTblProcesos, modelNoLlegados;
 
     public BufferedImage bufferPanelGantt, vacio;
-    
+
     protected Graphics2D graficaPanel, graficaBuffer;
 
     /**
@@ -49,7 +61,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     {
         // Inicialización de los componentes del frame
         initComponents();
-        
+
         // Inicialización de procesos
         this.idProceso = 1;
         this.procesos = new ArrayList<>();
@@ -65,8 +77,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.btnGraficas.setEnabled(false);
         this.btnAniadirProceso.setEnabled(false);
         this.btnGuardar.setEnabled(false);
-        
-        
+
         int ancho = panelGantt.getWidth();
         int alto = panelGantt.getHeight();
 
@@ -77,7 +88,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         g3.fillRect(0, 0, ancho, alto);
         graficaPanel = (Graphics2D) panelGantt.getGraphics();
         graficaBuffer = (Graphics2D) bufferPanelGantt.getGraphics();
-        
+
         graficaPanel.drawImage(bufferPanelGantt, 0, 0, null);
     }
 
@@ -91,6 +102,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private void initComponents()
     {
 
+        selectorFicheros = new javax.swing.JFileChooser();
         panelGantt = new javax.swing.JPanel();
         pnlControl = new javax.swing.JPanel();
         btnSimular = new javax.swing.JButton();
@@ -103,6 +115,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
         btnGraficas = new javax.swing.JButton();
         btnEncender = new javax.swing.JButton();
         btnPasoSiguiente = new javax.swing.JButton();
+        tfQuantum = new javax.swing.JTextField();
+        lblCiclosRestantes = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProcesos = new javax.swing.JTable();
         spColaProcesosListos = new javax.swing.JScrollPane();
@@ -173,7 +187,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         btnAniadirProceso.setFont(new java.awt.Font("Lucida Grande", 0, 18)); // NOI18N
         btnAniadirProceso.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Icons/anadir.png"))); // NOI18N
-        btnAniadirProceso.setActionCommand("");
         btnAniadirProceso.setMaximumSize(new java.awt.Dimension(48, 48));
         btnAniadirProceso.setMinimumSize(new java.awt.Dimension(48, 48));
         btnAniadirProceso.setPreferredSize(new java.awt.Dimension(48, 48));
@@ -279,6 +292,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         });
 
+        tfQuantum.setText("1");
+
+        lblCiclosRestantes.setText("Ciclos restantes: -");
+
         javax.swing.GroupLayout pnlControlLayout = new javax.swing.GroupLayout(pnlControl);
         pnlControl.setLayout(pnlControlLayout);
         pnlControlLayout.setHorizontalGroup(
@@ -291,7 +308,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
                         .addGap(18, 18, 18)
                         .addComponent(chxSJF)
                         .addGap(18, 18, 18)
-                        .addComponent(chxRR))
+                        .addComponent(chxRR)
+                        .addGap(18, 18, 18)
+                        .addComponent(tfQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblCiclosRestantes))
                     .addGroup(pnlControlLayout.createSequentialGroup()
                         .addComponent(btnEncender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -319,16 +340,18 @@ public class VentanaPrincipal extends javax.swing.JFrame
                             .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(btnEncender, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnAniadirProceso, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnListo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnListo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(btnSimular, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnPasoSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(pnlControlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chxFIFS)
                     .addComponent(chxSJF)
-                    .addComponent(chxRR))
+                    .addComponent(chxRR)
+                    .addComponent(tfQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCiclosRestantes))
                 .addContainerGap())
         );
 
@@ -349,7 +372,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             Class[] types = new Class []
             {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class
             };
             boolean[] canEdit = new boolean []
             {
@@ -411,7 +434,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             Class[] types = new Class []
             {
-                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean []
             {
@@ -475,7 +498,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             Class[] types = new Class []
             {
-                java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean []
             {
@@ -546,7 +569,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             Class[] types = new Class []
             {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
+                java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class
             };
             boolean[] canEdit = new boolean []
             {
@@ -591,7 +614,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             this.modelTblProcesos.addRow(new Object[]
             {
-            idProceso, 0, 3, 3, 5, 1
+                "#" + idProceso, 0, 3, 3, 5, 1, "0%"
             });
             idProceso++;
             this.btnListo.setEnabled(true);
@@ -636,9 +659,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
         chxRR.setEnabled(false);
         chxSJF.setEnabled(false);
         añadirProcesosDesdeTabla();
-        //volcarProcesosEnCola();
-        algoritmo = new FIFS(procesos, tblProcesos, tblColaProcesosListos, tblColaBloqueados,
-                tblNoLlegados, graficaPanel, graficaBuffer, bufferPanelGantt);
+        algoritmo = new RR(procesos, tblProcesos, tblColaProcesosListos, tblColaBloqueados,
+                tblNoLlegados, graficaPanel, graficaBuffer, bufferPanelGantt, 1, this.lblCiclosRestantes);
     }//GEN-LAST:event_btnListoActionPerformed
 
     private void chxFIFSMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_chxFIFSMousePressed
@@ -671,12 +693,18 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
     private void btnGuardarMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnGuardarMousePressed
     {//GEN-HEADEREND:event_btnGuardarMousePressed
-        // TODO add your handling code here:
+        this.guardarArchivo();
     }//GEN-LAST:event_btnGuardarMousePressed
 
     private void btnGraficasMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnGraficasMousePressed
     {//GEN-HEADEREND:event_btnGraficasMousePressed
-        // TODO add your handling code here:
+        try
+        {
+            crearGrafica();
+        } catch (IOException ex)
+        {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGraficasMousePressed
 
     private void btnEncenderMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnEncenderMousePressed
@@ -736,35 +764,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 new VentanaPrincipal().setVisible(true);
             }
         });
-       
+
     }
 
     private void añadirProcesosDesdeTabla()
     {
         for (int i = 0; i < tblProcesos.getRowCount(); i++)
         {
-            procesos.add(new Proceso((int) tblProcesos.getValueAt(i, 0),
+            procesos.add(new Proceso(
+                    Character.getNumericValue(((String) tblProcesos.getValueAt(i, 0)).charAt(1)),
                     (int) tblProcesos.getValueAt(i, 1),
                     (int) tblProcesos.getValueAt(i, 2),
                     (int) tblProcesos.getValueAt(i, 3),
                     (int) tblProcesos.getValueAt(i, 4),
-                    (int) tblProcesos.getValueAt(i, 5),
-                    null));
-        }
-    }
-
-    private void volcarProcesosEnCola()
-    {
-        Iterator iterador = procesos.iterator();
-        int i = 1;
-        while (iterador.hasNext())
-        {
-            Proceso current = (Proceso) iterador.next();
-            modelNoLlegados.addRow(new Object[]
-            {
-                current.id, current.tiempoDeLlegada
-            });
-            i++;
+                    (int) tblProcesos.getValueAt(i, 5)
+            ));
         }
     }
 
@@ -795,13 +809,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
         }
 
         graficaBuffer.drawLine(panelGantt.getWidth() - 1, 0, panelGantt.getWidth() - 1, panelGantt.getHeight());
-        
-        
+
         graficaBuffer.drawLine(0, 0, 40, 40);
-        
+
         graficaPanel.drawImage(bufferPanelGantt, 0, 0, null);
     }
-    
+
     public BufferedImage copiarBuffer(BufferedImage buffer)
     {
         ColorModel cm = buffer.getColorModel();
@@ -809,6 +822,43 @@ public class VentanaPrincipal extends javax.swing.JFrame
         WritableRaster raster = buffer.copyData(null);
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
     }
+
+    public void guardarArchivo()
+    {
+        int seleccion = selectorFicheros.showSaveDialog(this);
+        selectorFicheros.addChoosableFileFilter(new FileNameExtensionFilter("Images", "jpg", "png", "gif", "bmp"));
+        if (seleccion == JFileChooser.APPROVE_OPTION)
+        {
+            // File fichero = selectorFicheros.getSelectedFile();
+            try
+            {
+                ImageIO.write(bufferPanelGantt, "png", selectorFicheros.getSelectedFile());
+            } catch (IOException ex)
+            {
+                Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void crearGrafica() throws IOException{
+      DefaultPieDataset dataset = new DefaultPieDataset( );
+      dataset.setValue("IPhone 5s", new Double( 20 ) );
+      dataset.setValue("SamSung Grand", new Double( 20 ) );
+      dataset.setValue("MotoG", new Double( 40 ) );
+      dataset.setValue("Nokia Lumia", new Double( 10 ) );
+
+      JFreeChart chart = ChartFactory.createPieChart(
+         "Mobile Sales",   // chart title
+         dataset,          // data
+         true,             // include legend
+         true,
+         false);
+         
+      int width = 640;   /* Width of the image */
+      int height = 480;  /* Height of the image */ 
+      File pieChart = new File( "PieChart.jpeg" ); 
+      ChartUtilities.saveChartAsJPEG( pieChart , chart , width , height );
+   }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -825,6 +875,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JLabel lblCiclosRestantes;
     private javax.swing.JLabel lblColaBloqueados;
     private javax.swing.JLabel lblColaListos;
     private javax.swing.JLabel lblColaProcesos;
@@ -833,10 +884,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JLabel lblPanelControl;
     private javax.swing.JPanel panelGantt;
     private javax.swing.JPanel pnlControl;
+    private javax.swing.JFileChooser selectorFicheros;
     private javax.swing.JScrollPane spColaProcesosListos;
     private javax.swing.JTable tblColaBloqueados;
     private javax.swing.JTable tblColaProcesosListos;
     private javax.swing.JTable tblNoLlegados;
     private javax.swing.JTable tblProcesos;
+    private javax.swing.JTextField tfQuantum;
     // End of variables declaration//GEN-END:variables
 }
