@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Algoritmos;
 
 import Utils.Constantes;
@@ -130,6 +125,21 @@ public abstract class Algoritmo
         {
             colaProcesosSinLlegar.add(current);
         }        
+    }
+    
+    public void organizarColaProcesosPorPrioridad()
+    {
+        Collections.sort(this.colaProcesosListos, (Proceso p1, Proceso p2) ->
+        {
+            if (p1.prioridad < p2.prioridad)
+            {
+                return -1;
+            } 
+            else
+            {
+                return 1;
+            }
+        });
     }
 
     public void añadirCuadrado(Color color, int id, int tiempo)

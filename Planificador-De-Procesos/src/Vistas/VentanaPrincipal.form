@@ -52,10 +52,6 @@
       <AccessibilityProperties>
         <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
       </AccessibilityProperties>
-      <Events>
-        <EventHandler event="componentAdded" listener="java.awt.event.ContainerListener" parameters="java.awt.event.ContainerEvent" handler="panelGanttComponentAdded"/>
-        <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="panelGanttComponentShown"/>
-      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="10" y="350" width="1040" height="240"/>
@@ -100,7 +96,7 @@
                       <Group type="102" attributes="0">
                           <Component id="chxFIFS" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="chxSJF" min="-2" max="-2" attributes="0"/>
+                          <Component id="chxCFS" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Component id="chxRR" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -152,7 +148,7 @@
                   <EmptySpace pref="16" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="chxFIFS" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="chxSJF" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="chxCFS" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="chxRR" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="tfQuantum" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lblCiclosRestantes" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -212,12 +208,12 @@
             <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chxFIFSMousePressed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="chxSJF">
+        <Component class="javax.swing.JCheckBox" name="chxCFS">
           <Properties>
-            <Property name="text" type="java.lang.String" value="SJF"/>
+            <Property name="text" type="java.lang.String" value="CFS"/>
           </Properties>
           <Events>
-            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chxSJFMousePressed"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chxCFSMouseClicked"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chxRR">
@@ -225,7 +221,7 @@
             <Property name="text" type="java.lang.String" value="RR"/>
           </Properties>
           <Events>
-            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chxRRMousePressed"/>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="chxRRMouseClicked"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnListo">
@@ -414,6 +410,9 @@
               <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mousePressed" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblProcesosMousePressed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

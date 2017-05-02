@@ -5,7 +5,7 @@ import Utils.Constantes;
 /**
  * Clase que representa un proceso en un sistema operativo
  */
-public class Proceso
+public class Proceso implements Comparable<Proceso>
 {
 
     /**
@@ -34,6 +34,8 @@ public class Proceso
     
     //Estadisticas
     public int tiempoDeEsperaAcum;
+    
+    public int runTime;
 
 
     /**
@@ -65,6 +67,8 @@ public class Proceso
         
         this.ultimaModificacion = -1;
         this.tiempoDeEsperaAcum = 0;
+        
+        this.runTime = 0;
     }
     
     /**
@@ -78,5 +82,30 @@ public class Proceso
         int total = tiempoCPU1 + tiempoCPU2 + tiempoES;
         
         return (completado * 100) / total + "%"; 
+    }
+
+    @Override
+    public int compareTo(Proceso o)
+    {
+        if (this.runTime < o.runTime)
+        {
+            return -1;
+        }
+        else if (this.runTime > o.runTime)
+        {
+            return 0;
+        }
+        else if(this.runTime == o.runTime)
+        {
+            if(this.prioridad < o.prioridad)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return 1;
     }
 }
