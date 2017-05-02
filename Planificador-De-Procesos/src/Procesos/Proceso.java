@@ -35,7 +35,7 @@ public class Proceso implements Comparable<Proceso>
     //Estadisticas
     public int tiempoDeEsperaAcum;
     
-    public int runTime;
+    public float runTime;
 
 
     /**
@@ -65,10 +65,10 @@ public class Proceso implements Comparable<Proceso>
         this.tiempoEjecutadoEnES = 0;
         this.tiempoDeSalida = tiempoCPU1 + tiempoCPU2 + tiempoES;
         
+        this.runTime = 0 + (prioridad/100.0f);
+        
         this.ultimaModificacion = -1;
         this.tiempoDeEsperaAcum = 0;
-        
-        this.runTime = 0;
     }
     
     /**

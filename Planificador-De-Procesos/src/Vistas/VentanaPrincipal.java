@@ -186,9 +186,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
         chxFIFS.setText("FIFS");
         chxFIFS.addMouseListener(new java.awt.event.MouseAdapter()
         {
-            public void mousePressed(java.awt.event.MouseEvent evt)
+            public void mouseClicked(java.awt.event.MouseEvent evt)
             {
-                chxFIFSMousePressed(evt);
+                chxFIFSMouseClicked(evt);
             }
         });
 
@@ -231,13 +231,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
             public void mousePressed(java.awt.event.MouseEvent evt)
             {
                 btnGuardarMousePressed(evt);
-            }
-        });
-        btnGuardar.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                btnGuardarActionPerformed(evt);
             }
         });
 
@@ -674,11 +667,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
         }
     }//GEN-LAST:event_btnListoActionPerformed
 
-    private void chxFIFSMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_chxFIFSMousePressed
-    {//GEN-HEADEREND:event_chxFIFSMousePressed
-     
-    }//GEN-LAST:event_chxFIFSMousePressed
-
     private void btnGuardarMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_btnGuardarMousePressed
     {//GEN-HEADEREND:event_btnGuardarMousePressed
         this.guardarArchivo();
@@ -703,16 +691,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.prepararDiagramaGantt();
     }//GEN-LAST:event_btnEncenderMousePressed
 
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_btnGuardarActionPerformed
-    {//GEN-HEADEREND:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnGuardarActionPerformed
-
     private void tblProcesosMousePressed(java.awt.event.MouseEvent evt)//GEN-FIRST:event_tblProcesosMousePressed
     {//GEN-HEADEREND:event_tblProcesosMousePressed
         int row = tblProcesos.rowAtPoint(evt.getPoint());
         int col = tblProcesos.columnAtPoint(evt.getPoint());
-        
         tblProcesos.getModel().setValueAt("", row, col);
     }//GEN-LAST:event_tblProcesosMousePressed
 
@@ -731,6 +713,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
         chxRR.setSelected(true);
         chxCFS.setSelected(false);
     }//GEN-LAST:event_chxRRMouseClicked
+
+    private void chxFIFSMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_chxFIFSMouseClicked
+    {//GEN-HEADEREND:event_chxFIFSMouseClicked
+        algoritmoSelecionado = 1;
+        chxFIFS.setSelected(true);
+        chxRR.setSelected(false);
+        chxCFS.setSelected(false);
+    }//GEN-LAST:event_chxFIFSMouseClicked
 
     /**
      * @param args the command line arguments

@@ -18,22 +18,22 @@ import javax.swing.JTable;
 public class CFS extends Algoritmo
 {
     private RedBlackTree arbolDeProcesos;
-    
+
     public CFS(List<Proceso> procesos, JTable tblColaProcesos,
             JTable tblColaProcesosListos, JTable tblColaProcesosBloqueados,
-            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel, 
+            JTable tblColaProcesosSinLlegar, Graphics2D graficaPanel,
             Graphics2D graficaBuffer, BufferedImage bufferPanelGantt)
     {
         super(procesos, tblColaProcesos, tblColaProcesosListos, tblColaProcesosBloqueados,
                 tblColaProcesosSinLlegar, graficaPanel, graficaBuffer, bufferPanelGantt);
-        
-        this.arbolDeProcesos = new RedBlackTree();       
+
+        this.arbolDeProcesos = new RedBlackTree();
     }
 
     @Override
     public boolean run(int seconds)
     {
-         while (!fin)
+        while (!fin)
         {
             PasoSiguiente();
         }
@@ -48,7 +48,7 @@ public class CFS extends Algoritmo
             System.out.println("*********************** T = " + tiempoProcesador);
 
             procesoSaliente = null;
-            
+
             tratarColaProcesosSinLlegar();
 
             repintarColaProcesosSinLlegar();
@@ -56,17 +56,17 @@ public class CFS extends Algoritmo
             tratarColaProcesosBloqueados();
 
             repintarColaProcesosBloqueados();
-            
-            tratarColaProcesosListos();  
-            
+
+            tratarColaProcesosListos();
+
             repintarColaProcesosListos();
-            
+
             repintarColaProcesosBloqueados();
-            
+
             repintarColaProcesos();
-            
-            if (colaProcesosSinLlegar.isEmpty() && arbolDeProcesos.size() == 0
-                    && colaProcesosBloqueados.isEmpty() && procesoEnCurso == null)
+
+            if (colaProcesosSinLlegar.isEmpty() && arbolDeProcesos.root.key == null
+                    && colaProcesosBloqueados.isEmpty())
             {
                 fin = true;
             } else
@@ -76,8 +76,7 @@ public class CFS extends Algoritmo
 
             System.out.println("********************************************");
             System.out.println("********************************************\n");
-        }
-        else
+        } else
         {
             System.out.println("*** FIN DE LA SIMULACIÓN");
             System.out.println("********************************************");
@@ -85,7 +84,7 @@ public class CFS extends Algoritmo
         }
         return fin;
     }
-    
+
     private void tratarColaProcesosBloqueados()
     {
         System.out.println("*** INICIO TRATAMIENTO COLA DE BLOQUEADOS");
@@ -103,7 +102,6 @@ public class CFS extends Algoritmo
             procesoBloqueado = colaProcesosBloqueados.get(i);
             procesoBloqueado.tiempoEjecutadoEnES++;
             añadirCuadrado(Color.RED, procesoBloqueado.id, tiempoProcesador);
-            //procesoBloqueado.runTime--;
             System.out.println("El proceso #" + procesoBloqueado.id + " se encuentra bloqueado");
 
             if (procesoBloqueado.tiempoEjecutadoEnES == procesoBloqueado.tiempoES)
@@ -131,7 +129,7 @@ public class CFS extends Algoritmo
 
         System.out.println("*** FIN TRATAMIENTO COLA DE BLOQUEADOS\n");
     }
-    
+
     private void tratarColaProcesosSinLlegar()
     {
         System.out.println("*** INICIO TRATAMIENTO COLA DE NO LLEGADOS");
@@ -162,6 +160,7 @@ public class CFS extends Algoritmo
                 procesoSinLlegar.estado = Constantes.PROCESO_EN_CPU1;
                 colaProcesosSinLlegar.remove(i);
                 i--;
+                procesoSinLlegar.runTime += tiempoProcesador;
                 colaProcesosListos.add(procesoSinLlegar);
                 arbolDeProcesos.insert(procesoSinLlegar);
                 System.out.println("El proceso #" + procesoSinLlegar.id + " SI ha llegado, se mueve a listos");
@@ -173,16 +172,16 @@ public class CFS extends Algoritmo
 
         System.out.println("*** FIN TRATAMIENTO COLA DE NO LLEGADOS\n");
     }
-    
-      private void tratarColaProcesosListos()
+
+    private void tratarColaProcesosListos()
     {
         System.out.println("*** INICIO TRATAMIENTO NUEVO PROCESO DE COLA DE LISTOS");
 
-        RedBlackNode nodoActual = sacarProceso();
+        RedBlackNode nodoActual = sacarProceso(tiempoProcesador);
         Proceso procesoIzquierda = (Proceso) nodoActual.key;
-        
+
         // Saco un proceso y le hago ejecutarse
-        if (procesoEnCurso == null && arbolDeProcesos.size() > 0 
+        if (procesoEnCurso == null && arbolDeProcesos.size() > 0
                 && procesoIzquierda.ultimaModificacion != tiempoProcesador)
         {
             procesoEnCurso = procesoIzquierda;
@@ -190,12 +189,11 @@ public class CFS extends Algoritmo
             colaProcesosListos.remove(procesoEnCurso);
 
             System.out.println("Sacando Proceso de la cola de listo, #" + procesoEnCurso.id);
-        } 
-        else
+        } else
         {
             System.out.println("No hay procesos listos");
         }
-        
+
         System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
 
         // Marcamos los procesos en espera
@@ -253,11 +251,10 @@ public class CFS extends Algoritmo
                     colaProcesosListos.add(procesoIzquierda);
                     arbolDeProcesos.insert(procesoIzquierda);
                 }
-            } 
-            else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
+            } else if (procesoEnCurso.estado == Constantes.PROCESO_EN_CPU2)
             {
                 System.out.println("El proceso #" + procesoEnCurso.id + " está en CPU2");
-                
+
                 procesoEnCurso.tiempoEjecutadoEnCPU2++;
                 añadirCuadrado(Color.GREEN, procesoEnCurso.id, tiempoProcesador);
                 procesoIzquierda.runTime++;
@@ -268,8 +265,7 @@ public class CFS extends Algoritmo
                     System.out.println("El proceso #" + procesoEnCurso.id + " ha terminado");
                     procesoEnCurso.estado = Constantes.PROCESO_COMPLETADO;
                     procesoEnCurso = null;
-                }
-                else
+                } else
                 {
                     procesoEnCurso = null;
                     colaProcesosListos.add(procesoIzquierda);
@@ -280,19 +276,30 @@ public class CFS extends Algoritmo
 
         System.out.println("*** FIN TRATAMIENTO NUEVO PROCESO DE COLA DE LISTOS \n");
     }
-    
+
     /**
      * Saca el proceso de más a la izquierda del árbol, es decir, el que tiene
      * el menor tiempo de ejecución restante.
      */
-    public RedBlackNode sacarProceso()
+    public RedBlackNode sacarProceso(int tiempoProcesador)
     {
         RedBlackNode nodoActual = arbolDeProcesos.root;
-        
-        while(nodoActual.left.key != null)
+
+        while (nodoActual.left.key != null)
         {
             nodoActual = nodoActual.left;
         }
+
+        Proceso procesoActual = (Proceso) nodoActual.key;
+
+        if (procesoActual.ultimaModificacion != tiempoProcesador || procesoActual.ultimaModificacion == -1)
+        {
+            
+        } else
+        {
+            nodoActual = nodoActual.parent;
+        }
+
         return nodoActual;
-    } 
+    }
 }
