@@ -118,8 +118,9 @@ public class CFS extends Algoritmo
                     // Tiene pendiente su ejecución en CPU2, entra en CPU2
                     procesoBloqueado.estado = Constantes.PROCESO_EN_CPU2;
                     procesoBloqueado.ultimaModificacion = tiempoProcesador;
-                    colaProcesosListos.add(procesoBloqueado);
-                    arbolDeProcesos.insert(procesoBloqueado);
+                    bloqueadosAListos.add(procesoBloqueado);
+                    //colaProcesosListos.add(procesoBloqueado);
+                    //arbolDeProcesos.insert(procesoBloqueado);
                     System.out.println("El proceso #" + procesoBloqueado.id + " sale a CPU2");
                 }
                 colaProcesosBloqueados.remove(i);
@@ -196,6 +197,8 @@ public class CFS extends Algoritmo
 
         System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
 
+     
+        
         // Marcamos los procesos en espera
         for (Proceso procesoEnEspera : colaProcesosListos)
         {
@@ -203,6 +206,14 @@ public class CFS extends Algoritmo
             procesoEnEspera.tiempoDeEsperaAcum++;
             añadirCuadrado(Color.ORANGE, procesoEnEspera.id, tiempoProcesador);
         }
+        
+        for (Proceso procesoBloqueado : bloqueadosAListos)
+        {
+            colaProcesosListos.add(procesoBloqueado);
+            arbolDeProcesos.insert(procesoBloqueado);
+        }
+        
+        bloqueadosAListos.clear();
 
         System.out.println("****** FIN TRATAMIENTO PROCESOS EN ESPERA");
 

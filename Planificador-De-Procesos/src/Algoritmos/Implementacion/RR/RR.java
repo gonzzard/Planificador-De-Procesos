@@ -164,7 +164,8 @@ public class RR extends Algoritmo
                     // Tiene pendiente su ejecución en CPU2, entra en CPU2
                     procesoBloqueado.estado = Constantes.PROCESO_EN_CPU2;
                     procesoBloqueado.ultimaModificacion = tiempoProcesador;
-                    colaProcesosListos.add(procesoBloqueado);
+                    //colaProcesosListos.add(procesoBloqueado);
+                    bloqueadosAListos.add(procesoBloqueado);
                     System.out.println("El proceso #" + procesoBloqueado.id + " sale a CPU2");
                 }
                 colaProcesosBloqueados.remove(i);
@@ -210,13 +211,20 @@ public class RR extends Algoritmo
         }
 
         System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
-
+        
         for (Proceso procesoEnEspera : colaProcesosListos)
         {
             System.out.println("El proceso #" + procesoEnEspera.id + " está en espera");
             procesoEnEspera.tiempoDeEsperaAcum++;
             añadirCuadrado(Color.ORANGE, procesoEnEspera.id, tiempoProcesador);
         }
+        
+        for (Proceso procesoBloqueado : bloqueadosAListos)
+        {
+            colaProcesosListos.add(procesoBloqueado);
+        }
+        
+        bloqueadosAListos.clear();
 
         System.out.println("****** FIN TRATAMIENTO PROCESOS EN ESPERA");
 

@@ -33,6 +33,8 @@ public abstract class Algoritmo
     protected DefaultTableModel modelTblColaProcesos, modelTblColaProcesosListos, modelTblColaProcesosBloqueados, modelTblColaProcesosSinLlegar;;
 
     protected boolean fin, inicio;
+    
+    public List<Proceso> bloqueadosAListos = new ArrayList<Proceso>();
 
     /**
      * Variable de tipo <code>Graphics2D</code> que almacena los elementos
