@@ -161,7 +161,7 @@ public class CFS extends Algoritmo
                 procesoSinLlegar.estado = Constantes.PROCESO_EN_CPU1;
                 colaProcesosSinLlegar.remove(i);
                 i--;
-                procesoSinLlegar.runTime += tiempoProcesador;
+                procesoSinLlegar.runTime += getMaxRunTime();
                 colaProcesosListos.add(procesoSinLlegar);
                 arbolDeProcesos.insert(procesoSinLlegar);
                 System.out.println("El proceso #" + procesoSinLlegar.id + " SI ha llegado, se mueve a listos");
@@ -182,7 +182,7 @@ public class CFS extends Algoritmo
         Proceso procesoIzquierda = (Proceso) nodoActual.key;
 
         // Saco un proceso y le hago ejecutarse
-        if (procesoEnCurso == null && arbolDeProcesos.size() > 0
+        if (procesoEnCurso == null && arbolDeProcesos.root.key != null
                 && procesoIzquierda.ultimaModificacion != tiempoProcesador)
         {
             procesoEnCurso = procesoIzquierda;
@@ -197,7 +197,6 @@ public class CFS extends Algoritmo
 
         System.out.println("****** INICIO TRATAMIENTO PROCESOS EN ESPERA");
 
-     
         
         // Marcamos los procesos en espera
         for (Proceso procesoEnEspera : colaProcesosListos)
@@ -303,7 +302,8 @@ public class CFS extends Algoritmo
 
         Proceso procesoActual = (Proceso) nodoActual.key;
 
-        if (procesoActual.ultimaModificacion != tiempoProcesador || procesoActual.ultimaModificacion == -1)
+        if (procesoActual != null && (procesoActual.ultimaModificacion != tiempoProcesador 
+                || procesoActual.ultimaModificacion == -1))
         {
             
         } else
@@ -312,5 +312,20 @@ public class CFS extends Algoritmo
         }
 
         return nodoActual;
+    }
+    
+    public int getMaxRunTime()
+    {
+        int result = 0;
+        
+        for(Proceso proceso : procesos)
+        {
+            if(proceso.runTime > result)
+            {
+                result = (int) proceso.runTime;
+            }
+        }
+        
+        return result;
     }
 }
